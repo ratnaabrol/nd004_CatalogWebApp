@@ -1,6 +1,5 @@
 """Script to add a default user to the database."""
 
-from sqlalchemy import inspect
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
 from catalog_webapp.db.default_engine import DEFAULT_ENGINE
@@ -50,6 +49,7 @@ def main():
         else:
             print("Unable to add user.")
     except LookupError as lu_err:
+        # pylint:disable=no-member
         lu_user = lu_err.args[0]
         print("Default user already exists in the database.")
         print("Was added at: {} UTC".format(lu_user.joined_at_utc))
