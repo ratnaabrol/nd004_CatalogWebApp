@@ -18,3 +18,4 @@ class User(BASE):
     email = Column(String, unique=True, nullable=False)
     joined_at_utc = Column(DateTime, nullable=False, server_default=func.now())
     active = Column(Boolean, nullable=False, default=False)
+    admin = Column(Boolean, nullable=False, default=False)
