@@ -14,8 +14,8 @@ class User(BASE):
 
     id = Column(Integer, Sequence("users_id_seq"), autoincrement=True,
                 primary_key=True)
-    username = Column(String, unique=True, nullable=False)
-    email = Column(String, unique=True, nullable=False)
+    username = Column(String(100), unique=True, nullable=False)
+    email = Column(String(100), unique=True, nullable=False)
     joined_at_utc = Column(DateTime, nullable=False, server_default=func.now())
     active = Column(Boolean, nullable=False, default=False)
     admin = Column(Boolean, nullable=False, default=False)
