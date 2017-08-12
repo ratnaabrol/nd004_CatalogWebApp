@@ -5,8 +5,8 @@
 * id - required - primary key, integer, auto increment
 * username - required - string
 * email - required - email address
-* joined_at - required - UTC timestamp
-* active - required - boolean
+* joined_at - required - UTC timestamp - default db current timestamp
+* active - required - boolean - default false
 
 ### Catalog
 * id - required - primary key, integer, auto increment
