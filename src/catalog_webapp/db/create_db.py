@@ -2,6 +2,7 @@
 
 from catalog_webapp.db.default_engine import DEFAULT_ENGINE
 from catalog_webapp.model.mapping_base import BASE
+
 # import the models so that the BASE is populated
 from catalog_webapp.model import user  # pylint:disable-msg=unused-import
 
