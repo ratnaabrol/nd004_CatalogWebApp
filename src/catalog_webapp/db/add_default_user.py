@@ -1,8 +1,7 @@
 """Script to add a default user to the database."""
 
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import sessionmaker
-from catalog_webapp.db.default_engine import DEFAULT_ENGINE
+from catalog_webapp.db.default_engine import SESSION_FACTORY
 from catalog_webapp.model.user import User
 
 
@@ -16,8 +15,7 @@ def add_default_user():
     sqlalchemy.exc.SQLAlchemyError -- if an error occurs accessing the database
     """
     user = None
-    make_session = sessionmaker(bind=DEFAULT_ENGINE)
-    session = make_session()
+    session = SESSION_FACTORY()
     try:
         user = session.query(User).\
             filter(User.username == "default").one_or_none()
@@ -54,6 +52,7 @@ def main():
         print("Default user already exists in the database.")
         print("Was added at: {} UTC".format(lu_user.joined_at_utc))
         print("Username: {}".format(lu_user.username))
+        print("Provider: {}".format(lu_user.provider.name))
         print("Email: {}".format(lu_user.email))
         print("Active: {}".format(lu_user.active))
         print("Admin: {}".format(lu_user.admin))

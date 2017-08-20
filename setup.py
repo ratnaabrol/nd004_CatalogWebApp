@@ -19,7 +19,7 @@ setup(
     name="catalog_webapp",
     version="1.0.0",
     namespace_packages=["catalog_webapp"],
-    python_requires='>=3',
+    python_requires=">=3",
     packages=find_packages("src"),
     package_dir={"": "src"},
     install_requires=[],

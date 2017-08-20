@@ -2,8 +2,7 @@
 
 import argparse
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import sessionmaker
-from catalog_webapp.db.default_engine import DEFAULT_ENGINE
+from catalog_webapp.db.default_engine import SESSION_FACTORY
 from catalog_webapp.model.user import User
 
 
@@ -31,8 +30,7 @@ def grant_admin_to(user_email):
     SQLAlchemyError -- if an error occurs accessing the database
     """
     success = False
-    make_session = sessionmaker(bind=DEFAULT_ENGINE)
-    session = make_session()
+    session = SESSION_FACTORY()
     try:
         user = session.query(User).\
                filter(User.email == user_email).one_or_none()

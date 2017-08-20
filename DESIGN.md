@@ -4,6 +4,7 @@
 ### User
 * id - required - primary key, integer, auto increment
 * username - required - string
+* provider - required - the provider used to register the user (enumeration "local", "google")
 * email - required - email address
 * joined_at_utc - required - UTC timestamp - default db current timestamp
 * active - required - boolean - default false
