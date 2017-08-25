@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    {% block head %}
+    <link href="{{url_for('static', filename='style.css')}}" rel="stylesheet" type="text/css">
+    <title>Catalog - {% block title %}{% endblock %}</title>
+    {% endblock %}
+  </head>
+  <body>
+    <h1>{% block heading %}{% endblock %}</h1>
+    {% block body %}{% endblock %}
+   <body>
+</html>
