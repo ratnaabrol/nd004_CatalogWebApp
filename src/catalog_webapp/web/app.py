@@ -3,9 +3,9 @@ import random
 import json
 import string
 from pkg_resources import resource_string
-from flask import (Flask, render_template, request, redirect, url_for, flash,
+from flask import (Flask, render_template, request, redirect, url_for,
                    session, make_response)
-from oauth2client import client, crypt
+from oauth2client import client
 from catalog_webapp.db.default_engine import SESSION_FACTORY
 from catalog_webapp.model.auth_provider import AuthProvider
 from catalog_webapp.model.user import User
