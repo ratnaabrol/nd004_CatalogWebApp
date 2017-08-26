@@ -1,0 +1,21 @@
+{% extends "skeleton.html" %}
+{% block title %}Login{% endblock %}
+{% block heading %}Login{% endblock %}
+{% block head %}
+  {{ super() }}
+  <meta name="google-signin-client_id" content="103412510527-l53qc3670gg7tved63dvqer4c0ldr4go.apps.googleusercontent.com">
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+  <script src="https://apis.google.com/js/api:client.js"></script>
+  <script src="{{url_for('static', filename='login.js')}}"></script>
+{% endblock %}
+{% block body %}
+   <div id="gSignInWrapper">
+     <span id="gMsg" class="signInMsg"></span>
+     <div id="customBtn" class="customGPlusSignIn">
+       <span class="icon"></span>
+       <span class="buttonText">Login with Google</span>
+     </div>
+   </div>
+   <div id="name"></div>
+   <script>startApp("{{STATE}}");</script>
+{% endblock %}

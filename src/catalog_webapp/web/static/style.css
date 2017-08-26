@@ -13,6 +13,13 @@
   cursor: pointer;
 }
 
+span.signInMsg {
+  display: block;
+  background: lightcoral;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
 span.label {
   font-family: serif;
   font-weight: normal;

@@ -1,25 +1,12 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta name="google-signin-client_id" content="103412510527-l53qc3670gg7tved63dvqer4c0ldr4go.apps.googleusercontent.com">
-    <title>Register User</title>
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
-    <script src="{{url_for('static', filename='signin.js')}}"></script>
-  </head>
-  <body>
-    <h1>Welcome!</h1>
-      {% with messages = get_flashed_messages() %}
-        {% if messages %}
-          <ul class=flashes>
-          {% for message in messages %}
-            <li>{{ message }}</li>
-          {% endfor %}
-          </ul>
-        {% endif %}
-      {% endwith %}
-      This is the temporary index page for the catalog application.
-      {% if session.user_email %}
-        <a href="/logout">Logout</a>
-      {% endif %}
-  </body>
-</html>
+{% extends "skeleton.html" %}
+{% block title %}Welcome{% endblock %}
+{% block heading %}Welcome!{% endblock %}
+{% block body %}
+  <p>
+    This is the temporary index page for the catalog application.
+  </p>
+  {% if session.user_email %}
+    <p>You are logged in as {{ session.user_email}}</p>
+    <a href="/logout">Logout</a>
+  {% endif %}
+{% endblock %}

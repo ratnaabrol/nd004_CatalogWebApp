@@ -5,7 +5,7 @@ var startApp = function(state) {
     // Retrieve the singleton for the GoogleAuth library and set up the client.
     auth2 = gapi.auth2.init({
       client_id: '103412510527-l53qc3670gg7tved63dvqer4c0ldr4go.apps.googleusercontent.com',
-      cookiepolicy: 'single_host_origin',
+      cookie_policy: 'single_host_origin',
       scope: "profile email"
     });
     attachSignin(document.getElementById('customBtn'), state);
@@ -58,18 +58,3 @@ function onGoogleSignIn(googleUser, state, registered, alreadyRegistered, error)
   };
   xhr.send('idtoken=' + id_token);
 };
-//
-// function googleSignOut() {
-//   var auth2 = gapi.auth2.getAuthInstance();
-//   auth2.signOut().then(function () {
-//     var xhr = new XMLHttpRequest();
-//     xhr.open('POST', '/logout');
-//     xhr.onload = function() {
-//       console.log('User signed out.');
-//       setTimeout(function() {
-//         window.location.href="/";
-//       }, 4000);
-//     };
-//     xhr.send();
-//   });
-// };
