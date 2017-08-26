@@ -41,7 +41,8 @@ function attachSignInAction(auth, state) {
   console.log(element.id);
   element.onclick = function() {
     auth.grantOfflineAccess().then(
-      function(resp){processAccessGrant(resp, state);});
+      function(resp){processAccessGrant(resp, state);},
+      function(err){ console.log("Error granting access: " + err.error)});
   };
 };
 

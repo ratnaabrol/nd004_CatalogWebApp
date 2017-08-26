@@ -50,7 +50,7 @@ def logout():
     return redirect(url_for("index"))
 
 
-@APP.route("/googleTokenRegister", methods=["POST"])
+@APP.route("/googleOneTimeCode/register", methods=["POST"])
 def google_register():
     """Register a user using a google provider."""
 
@@ -60,31 +60,40 @@ def google_register():
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    token = request.values["idtoken"]
+    one_time_code = request.values["code"]
+    credentials = None
     try:
-        idinfo = client.verify_id_token(token, WEBAPP_CLIENT_ID)
-        if idinfo["iss"] not in ["accounts.google.com",
-                                 "https://accounts.google.com"]:
-            raise crypt.AppIdentityError("Wrong issuer.")
+        # upgrade one-time code from client into oauth2 credentials
+        secrets =\
+            json.loads(resource_string(__name__,
+                                       "client_secrets.json").decode("utf-8"))
+        credentials =\
+            client.credentials_from_code(WEBAPP_CLIENT_ID,
+                                         secrets["web"]["client_secret"],
+                                         "",
+                                         one_time_code)
+    except client.FlowExchangeError:
+        response =\
+            make_response(json.dumps('Failed to upgrade google auth code.'),
+                          401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
 
-        username = idinfo["sub"]
-        if not _USER_REPO.exists_by_username(username, AuthProvider.google):
-            # add user
-            user = User(username=username,
-                        provider=AuthProvider.google,
-                        email=idinfo["email"])
-            _USER_REPO.add_user(user)
-            print("Added user")
-            session["user_email"] = user.email
-            return redirect(url_for("index"))
+    username = credentials.id_token["sub"]
+    if not _USER_REPO.exists_by_username(username, AuthProvider.google):
+        # add user
+        user = User(username=username,
+                    provider=AuthProvider.google,
+                    email=credentials.id_token["email"])
+        _USER_REPO.add_user(user)
+        print("Added user")
+        return "", 200
 
-        print("Cannot register already registered user.")
-        return "", 409  # conflict
-    except crypt.AppIdentityError:
-        # redirect to error page
-        print("Invalid request to register a user.")
-        flash("Invalid request to register a user.")
-        return redirect(url_for("register"))
+    print("User already registered.")
+    response =\
+        make_response(json.dumps('User already registered.'), 409)
+    response.headers['Content-Type'] = 'application/json'
+    return response
 
 @APP.route("/googleOneTimeCode/login", methods=["POST"])
 def google_login():
@@ -96,7 +105,7 @@ def google_login():
         return response
 
     one_time_code = request.values["code"]
-    print(one_time_code)
+    credentials = None
     try:
         # upgrade one-time code from client into oauth2 credentials
         secrets =\
