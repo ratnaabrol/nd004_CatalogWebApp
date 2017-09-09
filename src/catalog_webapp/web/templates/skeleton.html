@@ -2,21 +2,69 @@
 <html>
   <head>
     {% block head %}
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <!-- SemanticUI framework -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.2.13/dist/semantic.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.2.13/dist/semantic.min.js"></script>
+    <!-- SemanticUI framework -->
+
     <link href="{{url_for('static', filename='style.css')}}" rel="stylesheet" type="text/css">
     <title>Catalog - {% block title %}{% endblock %}</title>
     {% endblock %}
   </head>
   <body>
-    <h1>{% block heading %}{% endblock %}</h1>
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul class=flashes>
-        {% for message in messages %}
-          <li>{{ message }}</li>
-        {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
-    {% block body %}{% endblock %}
+
+    <div class="ui fixed menu">
+      <div class="ui container">
+        <a href="#" class="header item">
+          Udacity Project: Catalog Application
+        </a>
+        <div class="right menu">
+          {% if session.user_email %}
+          <div class="item">
+            {{ session.user_email}}
+          </div>
+          <div class="item">
+            <a class="ui button" href="logout">Log out</a>
+          </div>
+          {% else %}
+            <div class="item">
+              <a class="ui button" href="login">Log in</a>
+            </div>
+            <div class="item">
+              <a class="ui primary button" href="register">Sign Up</a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="ui main text container">
+      <h1>{% block heading %}{% endblock %}</h1>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class=flashes>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+      {% block body %}{% endblock %}
+    </div>
+    <div class="ui vertical footer segment">
+      <div class="ui center aligned container">
+        <div class="ui horizontal small divided link list">
+          <a class="item" href="#">Site Map</a>
+          <a class="item" href="#">Contact Us</a>
+          <a class="item" href="#">Terms and Conditions</a>
+          <a class="item" href="#">Privacy Policy</a>
+        </div>
+      </div>
+   </div>
    <body>
 </html>
