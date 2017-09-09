@@ -44,7 +44,7 @@
     </div>
 
     <div class="ui main text container">
-      <h1>{% block heading %}{% endblock %}</h1>
+      <h1 class="ui header">{% block heading %}{% endblock %}</h1>
       {% with messages = get_flashed_messages() %}
         {% if messages %}
           <ul class=flashes>
