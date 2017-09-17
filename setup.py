@@ -22,6 +22,8 @@ setup(
     python_requires=">=3",
     packages=find_packages("src"),
     package_dir={"": "src"},
-    install_requires=[],
+    install_requires=["flask==0.12.12",
+                      "oauth2client=4.1.2",
+                      "sqlalchemy=1.1.14"],
     test_suite="setup.test_suite"
 )

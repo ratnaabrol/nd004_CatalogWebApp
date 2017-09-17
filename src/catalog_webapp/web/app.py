@@ -1,4 +1,4 @@
-"""The web application entry point for the catalog web application"""
+"""The web application entry point for the catalog web application."""
 import random
 import json
 import string
@@ -19,7 +19,7 @@ WEBAPP_CLIENT_ID = \
 
 @APP.route("/")
 def index():
-    """Main page."""
+    """Display main page."""
     msg = "This is the temporary index page for the catalog application."
     if "user_email" in session:
         msg = "You are logged in as {}".format(session["user_email"]) + msg
@@ -28,15 +28,16 @@ def index():
 
 @APP.route("/register", methods=["GET"])
 def register():
-    """Register user"""
+    """Display register user."""
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in range(32))
     session['state'] = state
     return render_template("register.html", STATE=state)
 
+
 @APP.route("/login", methods=["GET"])
 def login():
-    """Login user"""
+    """Login user."""
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in range(32))
     session['state'] = state
@@ -45,7 +46,7 @@ def login():
 
 @APP.route("/logout", methods=["GET", "POST"])
 def logout():
-    """Logout user"""
+    """Logout user."""
     session.pop("user_email", None)
     return redirect(url_for("index"))
 
@@ -53,7 +54,6 @@ def logout():
 @APP.route("/googleOneTimeCode/register", methods=["POST"])
 def google_register():
     """Register a user using a google provider."""
-
     # protect against CSFR
     if request.args.get('state') != session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
@@ -94,6 +94,7 @@ def google_register():
         make_response(json.dumps('User already registered.'), 409)
     response.headers['Content-Type'] = 'application/json'
     return response
+
 
 @APP.route("/googleOneTimeCode/login", methods=["POST"])
 def google_login():
