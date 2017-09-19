@@ -37,3 +37,29 @@ class UserRepoTest(unittest.TestCase):
         repo = UserRepo(TEST_SESSION_FACTORY)
         repo.add_user(User(username="goodusername", email="good@somewhere"))
         self.assertTrue(repo.exists_by_username("goodusername"))
+
+    def test_get_all_with_no_users_returns_an_empty_list(self):
+        repo = UserRepo(TEST_SESSION_FACTORY)
+        users = repo.get_all_users()
+        self.assertEqual([], users)
+
+    def test_get_all_with_one_user_returns_that_user(self):
+        repo = UserRepo(TEST_SESSION_FACTORY)
+        u = User(username="goodusername", email="good@somewhere")
+        repo.add_user(u)
+        users = repo.get_all_users()
+        self.assertEqual(1, len(users))
+        self.assertEqual(u, users[0])
+
+    def test_get_all_with_more_than_one_user_returns_all_users(self):
+        repo = UserRepo(TEST_SESSION_FACTORY)
+        u1 = User(username="goodusername", email="good@somewhere")
+        u2 = User(username="agoodusername", email="agood@somewhere")
+        u3 = User(username="bgoodusername", email="bgood@somewhere")
+        repo.add_user(u1)
+        repo.add_user(u2)
+        repo.add_user(u3)
+        users = repo.get_all_users()
+        expected = [u1, u2, u3]
+        self.assertEqual(len(expected), len(users))
+        self.assertListEqual(expected, users)

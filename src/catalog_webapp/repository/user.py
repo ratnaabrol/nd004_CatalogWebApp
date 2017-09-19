@@ -14,11 +14,12 @@ class UserRepo():
 
         session_factory -- sqlalchemy.orm.session.sessionmaker -
         The session factory used to create sessions for accessing the
-        database."""
+        database.
+        """
         self._sf = session_factory
 
     def add_user(self, user):
-        """Adds a user to the database.
+        """Add a user to the database.
 
         Keyword arguments:
         user -- catalog_webapp.model.user.User - the user to add to the
@@ -62,3 +63,16 @@ class UserRepo():
             session.close()
 
         return count != 0
+
+    def get_all_users(self):
+        """Get all users as a list of users.
+
+        Will return an empty list if no users exist.
+        """
+        session = self._sf()
+        try:
+            return session.query(User).all()
+        finally:
+            session.close()
+
+        return []

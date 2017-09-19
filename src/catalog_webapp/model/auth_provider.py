@@ -6,3 +6,6 @@ class AuthProvider(Enum):
     """Authorization provider enumeration."""
     local = 0
     google = 1
+
+    def __str__(self):
+        return self.name.capitalize()

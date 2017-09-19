@@ -10,6 +10,7 @@ from catalog_webapp.db.default_engine import SESSION_FACTORY
 from catalog_webapp.model.auth_provider import AuthProvider
 from catalog_webapp.model.user import User
 from catalog_webapp.repository.user import UserRepo
+from catalog_webapp.web.login import login_required
 
 APP = Flask(__name__)
 _USER_REPO = UserRepo(SESSION_FACTORY)
@@ -20,10 +21,15 @@ WEBAPP_CLIENT_ID = \
 @APP.route("/")
 def index():
     """Display main page."""
-    msg = "This is the temporary index page for the catalog application."
-    if "user_email" in session:
-        msg = "You are logged in as {}".format(session["user_email"]) + msg
     return render_template("index.html")
+
+
+@APP.route("/admin", methods=["GET"])
+@login_required
+def show_admin():
+    """Display the admin page."""
+    users = _USER_REPO.get_all_users()
+    return render_template("admin.html", USERS=users)
 
 
 @APP.route("/register", methods=["GET"])
