@@ -45,6 +45,33 @@ class UserRepo():
         else:
             raise LookupError
 
+    def update_user(self, user):
+        """Updates the user within the database.
+
+        Keyword arguments:
+        user -- catalog_webapp.model.user.User - the user to add to the
+        database
+
+        Exceptions:
+        LookupError -- if the user does not already exists
+        sqlalchemy.exc.SQLAlchemyError -- if an error occurs accessing the
+        database
+        """
+        session = self._sf()
+        found_user = self.get_by_username(user.username, user.provider)
+        if found_user:
+            try:
+                user.id = found_user.id
+                session.merge(user)
+                session.commit()
+            except SQLAlchemyError:
+                session.rollback()
+                raise
+            finally:
+                session.close()
+        else:
+            raise LookupError
+
     def exists_by_username(self, username, provider=AuthProvider.local):
         """Return whether user with given properties exist.
 
@@ -61,8 +88,43 @@ class UserRepo():
              .count()
         finally:
             session.close()
-
         return count != 0
+
+    def get_by_username(self, username, provider=AuthProvider.local):
+        """Return the user with the given username and provider.
+
+        Keyword arguments:
+        username -- string - the user name. Required.
+        provider -- AuthProvider - the auth provider used to register this
+                    user. Optional. Defaults to AuthProvider.local.
+        """
+        user = None
+        session = self._sf()
+        try:
+            user = session.query(User)\
+              .filter(User.username == username, User.provider == provider)\
+              .one_or_none()
+        finally:
+            session.close()
+        return user
+
+    def get_by_email(self, email, provider=AuthProvider.local):
+        """Return the user with the given email and provider.
+
+        Keyword arguments:
+        email -- string - the user's email address. Required.
+        provider -- AuthProvider - the auth provider used to register this
+                    user. Optional. Defaults to AuthProvider.local.
+        """
+        user = None
+        session = self._sf()
+        try:
+            user = session.query(User)\
+              .filter(User.email == email, User.provider == provider)\
+              .one_or_none()
+        finally:
+            session.close()
+        return user
 
     def get_all_users(self):
         """Get all users as a list of users.

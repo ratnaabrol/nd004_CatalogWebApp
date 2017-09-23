@@ -7,6 +7,7 @@ from catalog_webapp_tests.db.test_helper import DbTestHelper
 from catalog_webapp.repository.user import UserRepo
 from catalog_webapp.model.mapping_base import BASE
 from catalog_webapp.model.user import User
+from catalog_webapp.model.auth_provider import AuthProvider
 
 # pylint: disable=missing-docstring
 
@@ -63,3 +64,62 @@ class UserRepoTest(unittest.TestCase):
         expected = [u1, u2, u3]
         self.assertEqual(len(expected), len(users))
         self.assertListEqual(expected, users)
+
+    def test_get_user_by_username_returns_none_when_no_users(self):
+        repo = UserRepo(TEST_SESSION_FACTORY)
+        self.assertIsNone(repo.get_by_username("badusername"))
+
+    def test_get_user_by_username_returns_none_when_no_matching_user(self):
+        repo = UserRepo(TEST_SESSION_FACTORY)
+        u = User(username="goodusername", email="good@somewhere")
+        repo.add_user(u)
+        self.assertIsNone(repo.get_by_username("badusername"))
+
+    def test_get_user_by_username_returns_correct_user_when_user_exists(self):  # pylint: disable=line-too-long
+        repo = UserRepo(TEST_SESSION_FACTORY)
+        u = User(username="goodusername", email="good@somewhere")
+        repo.add_user(u)
+        actual_u = repo.get_by_username("goodusername")
+        self.assertEqual(u, actual_u)
+
+    def test_get_user_by_email_returns_none_when_no_users(self):
+        repo = UserRepo(TEST_SESSION_FACTORY)
+        self.assertIsNone(repo.get_by_email("bad@nowhere"))
+
+    def test_get_user_by_email_returns_none_when_no_matching_user(self):
+        repo = UserRepo(TEST_SESSION_FACTORY)
+        u = User(username="goodusername", email="good@somewhere")
+        repo.add_user(u)
+        self.assertIsNone(repo.get_by_email("bad@nowhere"))
+
+    def test_get_user_by_email_returns_correct_user_when_user_exists(self):  # pylint: disable=line-too-long
+        repo = UserRepo(TEST_SESSION_FACTORY)
+        u = User(username="goodusername", email="good@somewhere")
+        repo.add_user(u)
+        actual_u = repo.get_by_email("good@somewhere")
+        self.assertEqual(u, actual_u)
+
+    def test_update_user_with_unknown_user_raises_lookuperror(self):
+        repo = UserRepo(TEST_SESSION_FACTORY)
+        u = User(username="goodusername", email="good@somewhere")
+        with self.assertRaises(LookupError):
+            repo.update_user(u)
+
+    def test_update_user_with_known_user_performs_update(self):
+        repo = UserRepo(TEST_SESSION_FACTORY)
+        u = User(username="goodusername", email="good@somewhere", admin=False,
+                 provider=AuthProvider.google,
+                 active=False)
+        repo.add_user(u)
+
+        u_pre_change_actual = repo.get_by_username("goodusername",
+                                                   AuthProvider.google)
+        self.assertEqual(u, u_pre_change_actual)
+
+        u_activated = User(username="goodusername", email="good@somewhere",
+                           provider=AuthProvider.google,
+                           admin=False, active=True)
+        repo.update_user(u_activated)
+
+        u_actual = repo.get_by_username("goodusername", AuthProvider.google)
+        self.assertEqual(u_activated, u_actual)

@@ -25,9 +25,11 @@
         </a>
         <div class="right menu">
           {% if session.user_email %}
-          <a href="admin" class="item">
-            Admin
-          </a>
+            {% if session.user_admin %}
+              <a href="admin" class="item">
+                Admin
+              </a>
+            {% endif %}
           <div class="item">
             {{ session.user_email}}
           </div>

@@ -21,7 +21,7 @@ function onSignInError(err) {
   console.log("Unable to log in: " + err);
   msg = "";
   if (err === 403) {
-    msg = "Unknown user."
+    msg = "Unknown or deactivated user."
   }
   else if (err === 401) {
     msg = "Error with log in request."

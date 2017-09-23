@@ -10,7 +10,7 @@ from catalog_webapp.db.default_engine import SESSION_FACTORY
 from catalog_webapp.model.auth_provider import AuthProvider
 from catalog_webapp.model.user import User
 from catalog_webapp.repository.user import UserRepo
-from catalog_webapp.web.login import login_required
+from catalog_webapp.web.login import login_required, admin_required
 
 APP = Flask(__name__)
 _USER_REPO = UserRepo(SESSION_FACTORY)
@@ -26,6 +26,7 @@ def index():
 
 @APP.route("/admin", methods=["GET"])
 @login_required
+@admin_required
 def show_admin():
     """Display the admin page."""
     users = _USER_REPO.get_all_users()
@@ -131,14 +132,26 @@ def google_login():
         return response
 
     username = credentials.id_token["sub"]
-    if _USER_REPO.exists_by_username(username, AuthProvider.google):
-        # user logged in
+    user = _USER_REPO.get_by_username(username, AuthProvider.google)
+    response =\
+        make_response(json.dumps(
+            'Internal error - please report to application author.'), 500)
+    response.headers['Content-Type'] = 'application/json'
+    if user and user.active:
+        # active user logged in
         print("User logged in.")
         session["user_email"] = credentials.id_token["email"]
+        session["user_active"] = user.active
+        session["user_admin"] = user.admin
         return "", 200
-
-    print("Unknown user.")
-    response =\
-        make_response(json.dumps('Unknown user.'), 403)
-    response.headers['Content-Type'] = 'application/json'
+    elif user and not user.active:
+        print("Deactivated user.")
+        response =\
+            make_response(json.dumps('Deactivated user.'), 403)
+        response.headers['Content-Type'] = 'application/json'
+    else:
+        print("Unknown user.")
+        response =\
+            make_response(json.dumps('Unknown user.'), 403)
+        response.headers['Content-Type'] = 'application/json'
     return response
