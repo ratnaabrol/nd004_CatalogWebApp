@@ -21,6 +21,7 @@
 ### Category
 * id - required - primary key, integer, auto increment
 * owner - required - foreign key, user.id
+* catalog - required - foreign key, catalog.id
 * name - required - string
 * created_at - required - UTC timestamp
 * description - optional - string
@@ -28,6 +29,7 @@
 ### Item
 * id - required - primary key, integer, auto increment
 * owner - required - foreign key, user.id
+* category - required - foreign key, category.id
 * name - required - string
 * created_at - required - UTC timestamp
 * description - optional - string
