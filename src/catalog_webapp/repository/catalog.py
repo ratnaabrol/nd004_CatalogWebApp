@@ -6,7 +6,7 @@ from catalog_webapp.model.catalog import Catalog
 
 
 class CatalogRepo():
-    """The user repository interface."""
+    """The catalog repository interface."""
 
     def __init__(self, session_factory):
         """Constructor.
