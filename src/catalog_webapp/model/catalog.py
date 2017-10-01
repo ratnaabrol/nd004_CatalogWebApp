@@ -4,7 +4,7 @@
 # pylint:disable=invalid-name
 
 from sqlalchemy import Column, DateTime, Integer, Text, Sequence, String
-from sqlalchemy.schema import ForeignKey
+from sqlalchemy.schema import ForeignKey, UniqueConstraint
 from sqlalchemy.sql.expression import func
 from catalog_webapp.model.mapping_base import BASE
 
@@ -16,7 +16,36 @@ class Catalog(BASE):
     id = Column(Integer, Sequence("catalogs_id_seq"), autoincrement=True,
                 primary_key=True)
     owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    name = Column(String(100), unique=True, nullable=False)
+    name = Column(String(100), nullable=False)
     created_at_utc = \
         Column(DateTime, nullable=False, server_default=func.now())
     description = Column(Text)
+    __table_args__ = (UniqueConstraint("owner_id", "name"),)
+
+    def _key(self):
+        return (self.id, self.owner_id, self.name, self.created_at_utc,
+                self.description)
+
+    @staticmethod
+    def _is_valid_(other):
+        return (hasattr(other, "id") and
+                hasattr(other, "owner_id") and
+                hasattr(other, "name") and
+                hasattr(other, "created_at_utc") and
+                hasattr(other, "description"))
+
+    def __eq__(self, other):
+        if not Catalog._is_valid_(other):
+            return NotImplemented
+        return self._key() == other._key()  # pylint:disable=protected-access
+
+    def __lt__(self, other):
+        if not Catalog._is_valid_(other):
+            return NotImplemented
+        return self._key() < other._key()  # pylint:disable=protected-access
+
+    def __hash__(self):
+        return hash(self._key())
+
+    def __repr__(self):
+        return "[{}] [{}] [{}] [{}] [{}]".format(self.id, self.owner_id, self.name, self.created_at_utc, self.description)
