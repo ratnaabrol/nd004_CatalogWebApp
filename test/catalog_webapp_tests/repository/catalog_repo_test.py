@@ -34,7 +34,7 @@ class CatalogRepoTest(unittest.TestCase):
         """Reset the database before each test is run"""
         CatalogRepoTest._HELPER.reset_database()
 
-    def test_blank_database_has_no_categories(self):
+    def test_blank_database_has_no_catalogs(self):
         repo = CatalogRepo(TEST_SESSION_FACTORY)
         self.assertEqual([], repo.get_all())
 
