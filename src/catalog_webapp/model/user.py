@@ -26,6 +26,10 @@ class User(BASE):
     active = Column(Boolean, nullable=False, default=False)
     admin = Column(Boolean, nullable=False, default=False)
 
+
+    def _key(self):
+        return (self.id, self.username, self.provider, self.email)
+
     @staticmethod
     def _is_valid_(other):
         return (hasattr(other, "id") and
@@ -36,11 +40,12 @@ class User(BASE):
     def __eq__(self, other):
         if not User._is_valid_(other):
             return NotImplemented
-        return (self.id, self.username, self.provider, self.email) ==\
-               (other.id, other.username, other.provider, other.email)
+        return self._key() == other._key()  # pylint:disable=protected-access
 
     def __lt__(self, other):
         if not User._is_valid_(other):
             return NotImplemented
-        return (self.id, self.username, self.provider, self.email) <\
-               (other.id, other.username, other.provider, other.email)
+        return self._key() < other._key()  # pylint:disable=protected-access
+
+    def __hash__(self):
+        return hash(self._key())
